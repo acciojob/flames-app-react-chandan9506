@@ -1,93 +1,58 @@
-import React,{useState} from 'react';
-
-
+import React, { useState } from 'react'
 const Flames = () => {
-    const [inputValue1,setInputValue1]=useState("");
-    const [inputValue2,setInputValue2]=useState("");
-
-    const [finalResult,setFinalResult] = useState("");
-
-    const handleInputChange1 = (e) =>{
-        setInputValue1(e.target.value);
-    }
-
-    const handleInputChange2 = (e) =>{
-        setInputValue2(e.target.value);
-    }
-
-    const handleRelationship = ()=>{
-        
-        let arr1 = inputValue1.split("");
-        let arr2 = inputValue2.split("");
-
-        //console.log(arr1)
-        //console.log(arr2)
-
-       
-
-        function frequncyMapOfArr(arr){
-            const frequency = {};
-            for(const item of arr){
-                if(frequency[item]){
-                    frequency[item]++;
-                }
-                else{
-                    frequency[item]=1
-                }
-            }
-            return frequency;
-        }
-
-        let result1 = frequncyMapOfArr(arr1);
-        let result2 = frequncyMapOfArr(arr2);
-       //console.log(result1);
-       //console.log(result2);
-
-        for(let item in result1){
-            if(result2[item]){
-                let  minCount = Math.min(result1[item],result2[item]);
-                for(let i=0; i< minCount; i++){
-                    arr1.splice(arr1.indexOf(item),1);
-                    arr2.splice(arr2.indexOf(item),1);
-                }
-            }
-        }
-
-       //console.log(arr1)
-       //console.log(arr2)
-
-       let flamesArr = ["Siblings","Family","Love","Affection","Marriage","Enemy"];
-
-       let flamesResult = (arr1.length + arr2.length)%6;
-
-       
-       setFinalResult(flamesArr[flamesResult])
-
-       //console.log(finalResult);
-       
+    const [FirstName, setFirstName] = useState("")
+    const [SecondName, setSecondName] = useState("")
+    const [finalResult, setFinalResult] = useState("")
 
 
-    }
-
+    const relationshipValues = [
+        'Siblings', 
+        'Friends',  
+        'Love',     
+        'Affection',
+        'Marriage',
+        'Enemy' 
+      ];
 
     return (
-
         <div>
-            <input data-testid="input1" type="text" placeholder='Enter first name' value={inputValue1} onChange={handleInputChange1}/>
-            <input data-testid="input2" type="text" placeholder='Enter second name' value={inputValue2} onChange={handleInputChange2}/>
-            <button data-testid="calculate_relationship" onClick={handleRelationship}>Calculate Relationship Future</button>
-            <button data-testid="clear" onClick={()=>{
-                setInputValue1("");
-                setInputValue2("");
-            }}>Clear</button>
+            <input name="name1" data-testid="input1" value={FirstName} type="text" placeholder='Enter First Name'
+                onChange={(e) => setFirstName(e.target.value)}
+            />
+            <input name="name2" data-testid="input2" value={SecondName} type="text" placeholder='Enter Second Name'
+                onChange={(e) => setSecondName(e.target.value)}
+            />
+            <button data-testid="calculate_relationship" style={{ color: "lightblue" }}
+                onClick={() => {
+                    let result = "";
+                    let arr1 = FirstName.split("");
+                    let arr2 = SecondName.split("");
+                    let length=arr1.length+arr2.length;
 
-            {finalResult ? <h1>{finalResult}</h1>:""}
+                    arr1.forEach(char => {
+                        const index = arr2.indexOf(char);
+                        if (index !== -1) {
+                            char=''; 
+                            arr2[index] = '';
+                          length-=2;
+                        }
+                      });
+                    result = relationshipValues[length % 6];
 
+                    setFinalResult(result)
+                }}
+            >Calculate Reletionship Future</button>
+            <button data-testid="clear" style={{ color: "lightblue" }}
+                onClick={() => {
+                    setFirstName("");
+                    setSecondName("");
+                    setFinalResult("");
+                }}
+            >Clear</button>
 
+            <h3 data-testid="answer">{finalResult}</h3>
         </div>
+    )
+}
 
-        
-    );
-};
-
-export default Flames ;
+export default Flames
